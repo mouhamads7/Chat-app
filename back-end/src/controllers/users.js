@@ -1,12 +1,13 @@
 const User = require("../models/users");
 
 exports.getAll = async (req, res, next) => {
-  try {
-    const users = await User.findAll();
-    return res.status(200).json(users);
-  } catch (error) {
-    return res.status(500).json(error);
-  }
+  // try {
+  //   const users = await User.findAll();
+  //   return res.status(200).json(users);
+  // } catch (error) {
+  //   return res.status(500).json(error);
+  // }
+  res.json("Hi test");
 };
 
 // exports.getOne = async (req, res, next) => {
@@ -18,25 +19,24 @@ exports.getAll = async (req, res, next) => {
 //   }
 // };
 
-// exports.createOne = async (req, res, next) => {
-//   try {
-//     const USER_MODEL = {
-//       username: req.body.username,
-//       email: req.body.email,
-//       password: req.body.password,
-//     };
+exports.createOne = async (req, res, next) => {
+  try {
+    const USER_MODEL = {
+      username: req.body.username,
+      password: req.body.password,
+    };
 
-//     try {
-//       const user = await User.create(USER_MODEL);
-//       console.log("User crerated");
-//       return res.status(201).json(user);
-//     } catch (error) {
-//       return res.status(500).json(error);
-//     }
-//   } catch (error) {
-//     return res.status(500).json(error);
-//   }
-// };
+    try {
+      const user = await User.create(USER_MODEL);
+      console.log("User crerated");
+      return res.status(201).json(user);
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
 
 // exports.updateOne = async (req, res, next) => {
 //   try {

@@ -1,0 +1,10 @@
+body {
+  margin: 0;
+  background-color: rgb(8 51 68);
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

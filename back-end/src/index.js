@@ -35,6 +35,7 @@ app.use(
       secure: process.env.ENVIRONMENT === "production" ? "true" : "auto",
       httpOnly: true,
       sameSite: process.env.ENVIRONMENT === "production" ? "none" : "lax",
+      expires: 1000 * 60 * 60 * 24 * 7,
     },
   })
 );

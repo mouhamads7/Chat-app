@@ -5,8 +5,18 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import axios from "axios";
 import { User } from "../../types/User";
+import { useContext, useState } from "react";
+import { AccountContext } from "../AccountContext";
 
 export const Signup = () => {
+  const navigate = useNavigate();
+  const [error, setError] = useState(null);
+  const context = useContext(AccountContext);
+  if (!context) {
+    return <div>Context is not available</div>;
+  }
+  const { setUser } = context;
+
   const validationSchema = Yup.object().shape({
     username: Yup.string().required("This field is required"),
     password: Yup.string().required("This field is required"),
@@ -20,11 +30,15 @@ export const Signup = () => {
       .post("http://localhost:3001/auth/signup", user, {
         withCredentials: true,
       })
-      .then(() => navigate("/home"))
-      .catch((err) => console.log(err));
+      .then((res) => {
+        navigate("/home");
+        setUser({ ...res.data });
+      })
+      .catch((err) => {
+        console.log(err);
+        setError(err.response.data.message);
+      });
   };
-
-  const navigate = useNavigate();
 
   return (
     <Formik
@@ -41,6 +55,7 @@ export const Signup = () => {
       <div className="flex justify-center items-center h-screen">
         <Form className="text-white">
           <p className="text-4xl font-extrabold pb-8 text-center">Sign up</p>
+          {error && <p className="text-rose-700 text-center pb-2">{error}</p>}
           <TextField label="Username" name="username" />
           <TextField label="Password" name="password" type="password" />
           <TextField

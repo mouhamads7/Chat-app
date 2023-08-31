@@ -1,20 +1,54 @@
-const Yup = require("yup");
-const formSchema = Yup.object({
-  username: Yup.string().required("Username is required"),
-  password: Yup.string()
-    .required("Password is required")
-    .min(6, "The password is too short!"),
-});
+const validator = require("../controllers/validateForm");
+const User = require("../models/users");
+const bcrypt = require("bcrypt");
 
-exports.login = async (req, res, next) => {
-  const formData = req.body;
-  formSchema
-    .validate(formData)
-    .then((valid) => {
-      if (valid) console.log("Form is good");
-    })
-    .catch((err) => {
-      res.status(422).send();
-      console.log(err.errors);
-    });
+exports.login = async (req, res) => {
+  validator.validateForm(req, res);
+  const user = await User.findOne({
+    where: { username: req.body.username },
+  });
+  if (user === null) {
+    res
+      .status(401)
+      .json({ loggedIn: false, message: "Wrong username or password" });
+  } else {
+    const isSamePass = await bcrypt.compare(req.body.password, user.password);
+    if (isSamePass) {
+      req.session.user = { username: user.username, id: user.id };
+      res.status(200).json({ loggedIn: true, username: user.username });
+    } else {
+      res
+        .status(401)
+        .json({ loggedIn: false, message: "Wrong username or password" });
+    }
+  }
+};
+exports.getLogin = async (req, res) => {
+  if (req.session.user && req.session.user.username) {
+    res.status(200).json({ loggedIn: true, username: req.session.username });
+  } else {
+    res.status(401).json({ loggedIn: false });
+  }
+};
+
+exports.signup = async (req, res) => {
+  validator.validateForm(req, res);
+  const user = await User.findOne({ where: { username: req.body.username } });
+  if (user !== null) {
+    return res.status(400).json({ loggedIn: false, message: "Username taken" });
+  }
+  const hashedPass = await bcrypt.hash(req.body.password, 10);
+  const USER_MODEL = {
+    username: req.body.username,
+    password: hashedPass,
+  };
+
+  try {
+    const user = await User.create(USER_MODEL);
+    console.log("User created");
+    req.session.user = { username: user.username, id: user.id };
+    res.status(201).json({ loggedIn: true, username: user.username });
+  } catch (error) {
+    res.status(500).json(error);
+  }
 };

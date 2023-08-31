@@ -4,22 +4,32 @@ import { userSchema } from "chat-app-mouhamads7";
 import { useNavigate } from "react-router-dom";
 import { User } from "../../types/User";
 import axios from "axios";
+import { AccountContext } from "../AccountContext";
+import { useContext, useState } from "react";
 
 export const Login = () => {
-  // const validationSchema = Yup.object().shape({
-  //   username: Yup.string().required("This field is required"),
-  //   password: Yup.string().required("This field is required"),
-  // });
-
   const navigate = useNavigate();
+  const [error, setError] = useState(null);
+  const context = useContext(AccountContext);
+  if (!context) {
+    return <div>Context is not available</div>;
+  }
+
+  const { setUser } = context;
 
   const login = (user: User) => {
     axios
       .post("http://localhost:3001/auth/login", user, {
         withCredentials: true,
       })
-      .then(() => navigate("/home"))
-      .catch((err) => console.log(err));
+      .then((res) => {
+        navigate("/home");
+        setUser({ ...res.data });
+      })
+      .catch((err) => {
+        console.log(err);
+        setError(err.response.data.message);
+      });
   };
   return (
     <Formik
@@ -32,6 +42,7 @@ export const Login = () => {
       <div className="flex justify-center items-center h-screen">
         <Form className="text-white">
           <p className="text-4xl font-extrabold pb-8 text-center">Log In</p>
+          {error && <p className="text-rose-700 text-center pb-2">{error}</p>}
           <TextField label="Username" name="username" />
           <TextField label="Password" name="password" type="password" />
           <div className="flex justify-center">

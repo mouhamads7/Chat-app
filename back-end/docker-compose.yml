@@ -12,6 +12,7 @@ services:
       - PGHOST=db
     depends_on:
       - db
+      - redis
 
   db:
     image: "postgres"
@@ -24,5 +25,14 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/var/lib/redis/data
+    command: redis-server --appendonly yes
+
 volumes:
   db_data: {}
+  redis_data: {}

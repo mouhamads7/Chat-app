@@ -24,6 +24,7 @@ exports.login = async (req, res) => {
   }
 };
 exports.getLogin = async (req, res) => {
+  console.log("session: ", req.session.user);
   if (req.session.user && req.session.user.username) {
     res.status(200).json({ loggedIn: true, username: req.session.username });
   } else {

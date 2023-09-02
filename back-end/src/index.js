@@ -5,6 +5,8 @@ const cors = require("cors");
 const app = express();
 const server = require("http").createServer(app);
 const session = require("express-session");
+const Redis = require("ioredis");
+const RedisStore = require("connect-redis").default;
 require("dotenv").config();
 
 const io = new Server(server, {
@@ -16,19 +18,19 @@ const io = new Server(server, {
 
 const sequelize = require("./util/database");
 
+const redisClient = new Redis({
+  host: "redis",
+  port: 6379,
+});
 app.use(helmet());
 app.use(express.json());
 
-// app.use((req, res, next) => {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   res.setHeader("Access-Control-Allow-Methods", "GET", "POST", "PUT", "DELETE");
-//   next();
-// });
 app.use(
   session({
     secret: process.env.COOKIE_SECRET,
     credentials: true,
     name: "sid",
+    store: new RedisStore({ client: redisClient }),
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -50,10 +52,8 @@ app.use(
 
 io.on("connect", (socket) => {});
 
-const registerRoute = require("./routes/registerRouter");
 const authRouter = require("./routes/authRouter");
 
-// app.use("/register", registerRoute);
 app.use("/auth", authRouter);
 
 (async () => {

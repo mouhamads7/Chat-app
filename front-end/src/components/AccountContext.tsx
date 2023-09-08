@@ -7,16 +7,15 @@ import {
   useEffect,
   useState,
 } from "react";
-// import { useNavigate } from "react-router-dom";
 
 type UserContextType = {
-  user: { loggedIn: null };
-  setUser: Dispatch<SetStateAction<{ loggedIn: null }>>;
+  user: { loggedIn: number };
+  setUser: Dispatch<SetStateAction<{ loggedIn: number }>>;
 };
 export const AccountContext = createContext<UserContextType | null>(null);
 
 export const UserContext = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState({ loggedIn: null });
+  const [user, setUser] = useState({ loggedIn: -1 });
   useEffect(() => {
     axios
       .get("http://localhost:3001/auth/login", { withCredentials: true })

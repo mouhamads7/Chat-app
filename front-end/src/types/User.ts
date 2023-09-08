@@ -8,3 +8,9 @@ export type UserWithId = {
   username: string;
   password: string;
 };
+
+export type Friend = {
+  username: string;
+  connected: string;
+  userid: string;
+};

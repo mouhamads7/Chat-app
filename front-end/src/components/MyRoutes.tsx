@@ -4,6 +4,7 @@ import { Route, BrowserRouter, Routes } from "react-router-dom";
 import { Login } from "./login/Login";
 import { Signup } from "./login/Signup";
 import { PrivateRoutes } from "./PrivateRoutes";
+import { Home } from "./Home/Home";
 
 export const MyRoutes = () => {
   const context = useContext(AccountContext);
@@ -13,7 +14,7 @@ export const MyRoutes = () => {
   const { user } = context;
   console.log(user);
 
-  return user.loggedIn === null ? (
+  return user.loggedIn === -1 ? (
     <p>Loading</p>
   ) : (
     <BrowserRouter>
@@ -21,7 +22,7 @@ export const MyRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Signup />} />
         <Route element={<PrivateRoutes />}>
-          <Route path="/home" element={<div>Hello</div>} />
+          <Route path="/home" element={<Home />} />
         </Route>
         <Route path="*" element={<Login />} />
       </Routes>

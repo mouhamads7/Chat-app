@@ -5,10 +5,18 @@ import { useNavigate } from "react-router-dom";
 import { User } from "../../types/User";
 import axios from "axios";
 import { AccountContext } from "../AccountContext";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { useAuth } from "../PrivateRoutes";
 
 export const Login = () => {
   const navigate = useNavigate();
+
+  const isLogin = useAuth();
+
+  useEffect(() => {
+    if (isLogin) navigate(-1);
+  }, []);
+
   const [error, setError] = useState(null);
   const context = useContext(AccountContext);
   if (!context) {

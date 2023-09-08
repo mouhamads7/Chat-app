@@ -1,12 +1,15 @@
 const { userSchema } = require("chat-app-mouhamads7");
 
-exports.validateForm = (req, res) => {
+const validateForm = (req, res, next) => {
   const formData = req.body;
   userSchema
     .validate(formData)
     .then((valid) => {
       if (valid) {
         console.log("Form is good");
+        next();
+      } else {
+        res.status(422).send();
       }
     })
     .catch((err) => {
@@ -14,3 +17,5 @@ exports.validateForm = (req, res) => {
       console.log(err.errors);
     });
 };
+
+module.exports = validateForm;

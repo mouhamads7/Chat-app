@@ -24,7 +24,7 @@ export const ChatBox = ({
         resetForm();
       }}
     >
-      <Form className="w-full flex pb-5 px-5">
+      <Form className="flex pb-5 px-5 fixed bottom-0 bg-cyan-950 p-2 w-[60%] md:w-[70%]">
         <Field
           type="text"
           name="content"

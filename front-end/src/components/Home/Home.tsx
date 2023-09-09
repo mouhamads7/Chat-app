@@ -23,14 +23,16 @@ export const Home = () => {
   return (
     <FriendContext.Provider value={{ friendList, setFriendList }}>
       <div className="grid grid-cols-10 h-screen">
-        <div className="col-span-4 md:col-span-3 border-r border-gray-400 static">
-          <p className="text-white text-center font-semibold text-lg">
-            Welcome {location.state.username}
-          </p>
-          <Sidebar
-            selectedUser={selectedUser}
-            setSelectedUser={setSelectedUser}
-          />
+        <div className="col-span-4 md:col-span-3 border-r border-gray-400 flex justify-center">
+          <div className="fixed pt-4 w-1/3 md:w-1/4">
+            <p className="text-white text-center font-semibold text-lg">
+              Hello {location.state.username}
+            </p>
+            <Sidebar
+              selectedUser={selectedUser}
+              setSelectedUser={setSelectedUser}
+            />
+          </div>
         </div>
         <div className="col-span-6 md:col-span-7">
           <Chat

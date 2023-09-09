@@ -33,7 +33,7 @@ export const Chat = ({
         <div
           className={
             selectedUser === index1
-              ? "flex flex-col-reverse px-2 w-full h-full"
+              ? "flex flex-col-reverse px-2 w-full h-full mb-16"
               : "hidden"
           }
           key={`friend:${index1}`}

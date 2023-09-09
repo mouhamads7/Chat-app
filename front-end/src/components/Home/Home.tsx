@@ -17,13 +17,13 @@ export const Home = () => {
   const [friendList, setFriendList] = useState<Friend[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   useSocketSetup({ setFriendList, setMessages });
+
   const [selectedUser, setSelectedUser] = useState(0);
-  console.log("friendList: ", friendList);
 
   return (
     <FriendContext.Provider value={{ friendList, setFriendList }}>
       <div className="grid grid-cols-10 h-screen">
-        <div className="col-span-3 border-r border-gray-400">
+        <div className="col-span-4 md:col-span-3 border-r border-gray-400 static">
           <p className="text-white text-center font-semibold text-lg">
             Welcome {location.state.username}
           </p>
@@ -32,7 +32,7 @@ export const Home = () => {
             setSelectedUser={setSelectedUser}
           />
         </div>
-        <div className="col-span-7">
+        <div className="col-span-6 md:col-span-7">
           <Chat
             selectedUser={selectedUser}
             userid={friendList[selectedUser]?.userid}

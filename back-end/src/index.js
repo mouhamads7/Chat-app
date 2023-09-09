@@ -47,7 +47,6 @@ app.use("/auth", authRouter);
 (async () => {
   try {
     await sequelize.sync({ force: false });
-    console.log("testttt");
     server.listen(process.env.EXTERNAL_PORT || 3001);
   } catch (error) {
     console.error(error);

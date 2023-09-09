@@ -48,7 +48,6 @@ exports.signup = async (req, res) => {
 
   try {
     const user = await User.create(USER_MODEL);
-    console.log("User created");
     req.session.user = {
       username: user.username,
       id: user.id,

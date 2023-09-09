@@ -38,16 +38,15 @@ export const Chat = ({
           }
           key={`friend:${index1}`}
         >
-          <div ref={goDownDiv}></div>
           {messages
             .filter((m) => m.to === f.userid || m.from === f.userid)
             .map((message, index2) => (
               <p
                 className={classNames(
-                  "font-lg mb-2 rounded-lg max-w-[50%] text-black p-2",
+                  "font-lg mb-2 rounded-lg max-w-[90%] text-black p-2 break-words",
                   {
-                    "bg-blue-100 self-end": message.to === f.userid,
-                    "bg-gray-100 self-start": message.to !== f.userid,
+                    "bg-blue-200 self-end": message.to === f.userid,
+                    "bg-gray-200 self-start": message.to !== f.userid,
                   }
                 )}
                 key={`msg:${index2}`}
@@ -57,6 +56,7 @@ export const Chat = ({
             ))}
         </div>
       ))}
+      <div ref={goDownDiv}></div>
       <ChatBox userid={userid} setMessages={setMessages} />
     </div>
   ) : (

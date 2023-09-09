@@ -18,21 +18,17 @@ module.exports.initializeUser = async (socket) => {
     "connected",
     "true"
   );
-  console.log("SocketId: ", socket.user.userid);
   const friendList = await redisClient.lrange(
     `friends:${socket.user.username}`,
     0,
     -1
   );
-  console.log("friend list: ", friendList);
   const parsedFriendList = await parseFriendList(friendList);
   const friendRooms = parsedFriendList.map((friend) => friend.userid);
   if (friendRooms.length > 0)
     socket
       .to(friendRooms)
       .emit("connected", "true", socket.user.username, parsedFriendList);
-  console.log("friendRooms: ", friendRooms);
-  console.log("parsedFriendList: ", parsedFriendList);
   socket.emit("friends", parsedFriendList);
 
   const messageQuery = await redisClient.lrange(
@@ -57,9 +53,6 @@ module.exports.addUser = async (socket, username, callback) => {
     return;
   }
   const friend = await redisClient.hgetall(`userid:${username}`);
-  console.log(username);
-  console.log("friend: ", friend);
-  console.log("friend length: ", friend.length);
   if (!friend.userid) {
     callback({ done: false, error: "User does not exist" });
     return;
@@ -69,7 +62,6 @@ module.exports.addUser = async (socket, username, callback) => {
     0,
     -1
   );
-  console.log("index de momo: ", currentFriendList.indexOf(username));
   if (currentFriendList && currentFriendList.indexOf(username) !== -1) {
     callback({ done: false, error: "Friend already added" });
     return;
@@ -83,7 +75,6 @@ module.exports.addUser = async (socket, username, callback) => {
     userid: friend.userid,
     connected: friend.connected,
   };
-  console.log("added : ", addedFriend);
   callback({ done: true, addedFriend });
 };
 
@@ -129,5 +120,5 @@ module.exports.sendMessage = async (socket, message) => {
   const messageString = [message.to, message.from, message.content].join(".");
   await redisClient.lpush(`chat:${message.to}`, messageString);
   await redisClient.lpush(`chat:${message.from}`, messageString);
-  socket.to(message.to).emit("send_message", message);
+  socket.to(message.to).emit("receive_message", message);
 };

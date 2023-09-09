@@ -18,6 +18,9 @@ export const useSocketSetup = ({ setFriendList, setMessages }: props) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     socket.connect();
+    socket.on("receive_message", (message) => {
+      setMessages((prevM) => [message, ...prevM]);
+    });
     socket.on("friends", (friendList) => {
       setFriendList(friendList);
     });
@@ -34,9 +37,6 @@ export const useSocketSetup = ({ setFriendList, setMessages }: props) => {
         });
       });
     });
-    socket.on("send_message", (message) => {
-      setMessages((prevM) => [message, ...prevM]);
-    });
     socket.on("connect_error", () => {
       setUser({ loggedIn: 0 });
     });
@@ -45,6 +45,7 @@ export const useSocketSetup = ({ setFriendList, setMessages }: props) => {
       socket.off("connected");
       socket.off("friends");
       socket.off("messages");
+      socket.off("receive_message");
     };
-  }, [setFriendList, setUser, setMessages]);
+  }, [setFriendList, setMessages, setUser]);
 };

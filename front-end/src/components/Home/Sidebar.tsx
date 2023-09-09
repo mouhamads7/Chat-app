@@ -15,7 +15,6 @@ export const Sidebar = ({ selectedUser, setSelectedUser }: props) => {
     return <div>Context is not available</div>;
   }
   const { friendList } = context;
-  console.log(friendList);
 
   return (
     <div className="py-4 text-white">

@@ -12,7 +12,6 @@ export const MyRoutes = () => {
     return <div>Context is not available</div>;
   }
   const { user } = context;
-  console.log(user);
 
   return user.loggedIn === -1 ? (
     <p>Loading</p>

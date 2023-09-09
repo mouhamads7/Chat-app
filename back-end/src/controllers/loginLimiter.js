@@ -8,7 +8,6 @@ module.exports.reqLimiter = (reqLimit, timeout) => async (req, res, next) => {
     .incr(ip)
     .expire(ip, timeout)
     .exec();
-  console.log(response[1]);
   if (response[1] > reqLimit)
     res.json({ loggedIn: false, message: "Try again in a minute." });
   else next();

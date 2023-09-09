@@ -1,13 +1,14 @@
-import { useContext, useEffect } from "react";
+import { Dispatch, SetStateAction, useContext, useEffect } from "react";
 import { socket } from "../../socket";
 import { AccountContext } from "../AccountContext";
-import { Friend } from "../../types/User";
+import { Friend, Message } from "../../types/User";
 
 type props = {
-  setFriendList: (l: Friend[]) => void;
+  setFriendList: Dispatch<SetStateAction<Friend[]>>;
+  setMessages: Dispatch<SetStateAction<Message[]>>;
 };
 
-export const UseSocketSetup = ({ setFriendList }: props) => {
+export const useSocketSetup = ({ setFriendList, setMessages }: props) => {
   const context = useContext(AccountContext);
   if (!context) {
     return <div>Context is not available</div>;
@@ -20,7 +21,10 @@ export const UseSocketSetup = ({ setFriendList }: props) => {
     socket.on("friends", (friendList) => {
       setFriendList(friendList);
     });
-    socket.on("connected", (connected: boolean, username: string) => {
+    socket.on("messages", (messages) => {
+      setMessages(messages);
+    });
+    socket.on("connected", (connected: string, username: string) => {
       setFriendList((friendList) => {
         return [...friendList].map((f) => {
           if (f.username === username) {
@@ -30,11 +34,17 @@ export const UseSocketSetup = ({ setFriendList }: props) => {
         });
       });
     });
+    socket.on("send_message", (message) => {
+      setMessages((prevM) => [message, ...prevM]);
+    });
     socket.on("connect_error", () => {
       setUser({ loggedIn: 0 });
     });
     return () => {
       socket.off("connect_error");
+      socket.off("connected");
+      socket.off("friends");
+      socket.off("messages");
     };
-  }, [setFriendList, setUser]);
+  }, [setFriendList, setUser, setMessages]);
 };

@@ -28,10 +28,27 @@ module.exports.initializeUser = async (socket) => {
   const parsedFriendList = await parseFriendList(friendList);
   const friendRooms = parsedFriendList.map((friend) => friend.userid);
   if (friendRooms.length > 0)
-    socket.to(friendRooms).emit("connected", "true", socket.user.username);
+    socket
+      .to(friendRooms)
+      .emit("connected", "true", socket.user.username, parsedFriendList);
   console.log("friendRooms: ", friendRooms);
   console.log("parsedFriendList: ", parsedFriendList);
   socket.emit("friends", parsedFriendList);
+
+  const messageQuery = await redisClient.lrange(
+    `chat:${socket.user.userid}`,
+    0,
+    -1
+  );
+  const messages = messageQuery.map((message) => {
+    const messageArray = message.split(".");
+    return {
+      to: messageArray[0],
+      from: messageArray[1],
+      content: messageArray[2],
+    };
+  });
+  if (messages && messages.length > 0) socket.emit("messages", messages);
 };
 
 module.exports.addUser = async (socket, username, callback) => {
@@ -66,6 +83,7 @@ module.exports.addUser = async (socket, username, callback) => {
     userid: friend.userid,
     connected: friend.connected,
   };
+  console.log("added : ", addedFriend);
   callback({ done: true, addedFriend });
 };
 
@@ -80,10 +98,13 @@ module.exports.onDisconnect = async (socket) => {
     0,
     -1
   );
+  const parsedFriendList = await parseFriendList(friendList);
   const friendRooms = await parseFriendList(friendList).then((friends) =>
     friends.map((friend) => friend.userid)
   );
-  socket.to(friendRooms).emit("connected", "false", socket.user.username);
+  socket
+    .to(friendRooms)
+    .emit("connected", "false", socket.user.username, parsedFriendList);
 };
 
 const parseFriendList = async (friendList) => {
@@ -101,4 +122,12 @@ const parseFriendList = async (friendList) => {
     });
   }
   return newFriendList;
+};
+
+module.exports.sendMessage = async (socket, message) => {
+  message.from = socket.user.userid;
+  const messageString = [message.to, message.from, message.content].join(".");
+  await redisClient.lpush(`chat:${message.to}`, messageString);
+  await redisClient.lpush(`chat:${message.from}`, messageString);
+  socket.to(message.to).emit("send_message", message);
 };

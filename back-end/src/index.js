@@ -9,6 +9,7 @@ const {
   addUser,
   initializeUser,
   onDisconnect,
+  sendMessage,
 } = require("./controllers/socketController");
 const {
   sessionMiddleware,
@@ -36,6 +37,7 @@ io.on("connect", (socket) => {
     addUser(socket, username, callback)
   );
   socket.on("disconnecting", () => onDisconnect(socket));
+  socket.on("send_message", (message) => sendMessage(socket, message));
 });
 
 const authRouter = require("./routes/authRouter");

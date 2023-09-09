@@ -31,7 +31,7 @@ export const Signup = () => {
         withCredentials: true,
       })
       .then((res) => {
-        navigate("/home");
+        navigate("/home", { state: res.data });
         setUser({ ...res.data });
       })
       .catch((err) => {

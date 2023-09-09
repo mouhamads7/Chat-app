@@ -14,3 +14,9 @@ export type Friend = {
   connected: string;
   userid: string;
 };
+
+export type Message = {
+  from: string;
+  to: string;
+  content: string;
+};

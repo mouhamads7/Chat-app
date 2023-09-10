@@ -7,11 +7,13 @@ import axios from "axios";
 import { User } from "../../types/User";
 import { useContext, useState } from "react";
 import { AccountContext } from "../AccountContext";
+import { getBaseUrl } from "../getBaseUrl";
 
 export const Signup = () => {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   const context = useContext(AccountContext);
+  const baseUrl = getBaseUrl();
   if (!context) {
     return <div>Context is not available</div>;
   }
@@ -27,7 +29,7 @@ export const Signup = () => {
 
   const signup = (user: User) => {
     axios
-      .post("http://localhost:3001/auth/signup", user, {
+      .post(`${baseUrl}/auth/signup`, user, {
         withCredentials: true,
       })
       .then((res) => {

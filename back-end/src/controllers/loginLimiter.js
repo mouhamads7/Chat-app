@@ -2,7 +2,7 @@ const redisClient = require("../redis");
 
 module.exports.reqLimiter = (reqLimit, timeout) => async (req, res, next) => {
   //remove the slice after testing
-  const ip = req.connection.remoteAddress.slice(0, 4);
+  const ip = req.headers["x-forwarded-for"] || req.connection.remteAddress;
   const [response] = await redisClient
     .multi()
     .incr(ip)

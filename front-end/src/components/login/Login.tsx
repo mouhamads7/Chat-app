@@ -7,10 +7,11 @@ import axios from "axios";
 import { AccountContext } from "../AccountContext";
 import { useContext, useEffect, useState } from "react";
 import { useAuth } from "../PrivateRoutes";
+import { getBaseUrl } from "../getBaseUrl";
 
 export const Login = () => {
   const navigate = useNavigate();
-
+  const baseUrl = getBaseUrl();
   const isLogin = useAuth();
 
   useEffect(() => {
@@ -27,7 +28,7 @@ export const Login = () => {
 
   const login = (user: User) => {
     axios
-      .post("http://localhost:3001/auth/login", user, {
+      .post(`${baseUrl}/auth/login`, user, {
         withCredentials: true,
       })
       .then((res) => {

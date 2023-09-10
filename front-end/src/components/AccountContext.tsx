@@ -7,6 +7,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { getBaseUrl } from "./getBaseUrl";
 
 type UserContextType = {
   user: { loggedIn: number };
@@ -16,9 +17,12 @@ export const AccountContext = createContext<UserContextType | null>(null);
 
 export const UserContext = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState({ loggedIn: -1 });
+  const baseUrl = getBaseUrl();
   useEffect(() => {
     axios
-      .get("http://localhost:3001/auth/login", { withCredentials: true })
+      .get(`${baseUrl}/auth/login`, {
+        withCredentials: true,
+      })
       .then((res) => {
         if (res.data.loggedIn === false) {
           setUser({ ...res.data });

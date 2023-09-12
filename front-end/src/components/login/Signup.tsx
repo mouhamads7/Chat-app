@@ -20,7 +20,9 @@ export const Signup = () => {
   const { setUser } = context;
 
   const validationSchema = Yup.object().shape({
-    username: Yup.string().required("This field is required"),
+    username: Yup.string()
+      .required("This field is required")
+      .matches(/^[aA-zZ0-9\s]+$/, "Only alphabets are allowed for this field "),
     password: Yup.string().required("This field is required"),
     confirmPassword: Yup.string()
       .oneOf([Yup.ref("password")], "Passwords are not matching")

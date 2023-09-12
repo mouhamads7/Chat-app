@@ -8,7 +8,7 @@ export const useAuth = () => {
     return <div>Context is not available</div>;
   }
   const { user } = context;
-  return user && user.loggedIn;
+  return user && user.loggedIn === 1;
 };
 
 export const PrivateRoutes = () => {

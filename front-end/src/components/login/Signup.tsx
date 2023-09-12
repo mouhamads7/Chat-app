@@ -7,18 +7,22 @@ import axios from "axios";
 import { User } from "../../types/User";
 import { useContext, useState } from "react";
 import { AccountContext } from "../AccountContext";
+import { getBaseUrl } from "../getBaseUrl";
 
 export const Signup = () => {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   const context = useContext(AccountContext);
+  const baseUrl = getBaseUrl();
   if (!context) {
     return <div>Context is not available</div>;
   }
   const { setUser } = context;
 
   const validationSchema = Yup.object().shape({
-    username: Yup.string().required("This field is required"),
+    username: Yup.string()
+      .required("This field is required")
+      .matches(/^[aA-zZ0-9\s]+$/, "Only alphabets are allowed for this field "),
     password: Yup.string().required("This field is required"),
     confirmPassword: Yup.string()
       .oneOf([Yup.ref("password")], "Passwords are not matching")
@@ -27,7 +31,7 @@ export const Signup = () => {
 
   const signup = (user: User) => {
     axios
-      .post("http://localhost:3001/auth/signup", user, {
+      .post(`${baseUrl}/auth/signup`, user, {
         withCredentials: true,
       })
       .then((res) => {

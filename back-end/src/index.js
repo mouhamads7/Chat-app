@@ -43,7 +43,7 @@ io.on("connect", (socket) => {
 const authRouter = require("./routes/authRouter");
 
 app.use("/auth", authRouter);
-
+app.set("trust proxy", 1);
 (async () => {
   try {
     await sequelize.sync({ force: false });

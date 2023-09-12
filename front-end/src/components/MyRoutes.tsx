@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { AccountContext } from "./AccountContext";
-import { Route, BrowserRouter, Routes } from "react-router-dom";
+import { Route, Routes, HashRouter } from "react-router-dom";
 import { Login } from "./login/Login";
 import { Signup } from "./login/Signup";
 import { PrivateRoutes } from "./PrivateRoutes";
@@ -16,7 +16,7 @@ export const MyRoutes = () => {
   return user.loggedIn === -1 ? (
     <p>Loading</p>
   ) : (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Signup />} />
@@ -25,6 +25,6 @@ export const MyRoutes = () => {
         </Route>
         <Route path="*" element={<Login />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 };

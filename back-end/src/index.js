@@ -11,11 +11,7 @@ const {
   onDisconnect,
   sendMessage,
 } = require("./controllers/socketController");
-const {
-  sessionMiddleware,
-  wrap,
-  corsConfig,
-} = require("./controllers/serverController");
+const { wrap, corsConfig } = require("./controllers/serverController");
 
 const io = new Server(server, {
   cors: corsConfig,
@@ -25,11 +21,9 @@ const sequelize = require("./util/database");
 
 app.use(helmet());
 app.use(express.json());
-app.use(sessionMiddleware);
 
 app.use(cors(corsConfig));
 
-io.use(wrap(sessionMiddleware));
 io.use(authorizeUser);
 io.on("connect", (socket) => {
   initializeUser(socket);

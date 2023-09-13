@@ -1,15 +1,22 @@
 const redisClient = require("../redis");
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
 
 module.exports.authorizeUser = (socket, next) => {
-  if (!socket.request.session || !socket.request.session.user)
-    next(new Error("Not authorized"));
-  else {
-    next();
-  }
+  const token = socket.handshake.auth.token;
+  console.log("token", token);
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      console.log("Bad request", err);
+      next(new Error("Not authorized"));
+    } else {
+      socket.user = { ...decoded };
+      next();
+    }
+  });
 };
 
 module.exports.initializeUser = async (socket) => {
-  socket.user = { ...socket.request.session.user };
   socket.join(socket.user.userid);
   redisClient.hset(
     `userid:${socket.user.username}`,

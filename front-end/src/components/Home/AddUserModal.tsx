@@ -2,8 +2,7 @@ import { Formik, Form } from "formik";
 import { TextField } from "../TextField";
 import { useContext, useEffect, useRef, useState } from "react";
 import { friendSchema } from "chat-app-mouhamads7";
-import { socket } from "../../socket";
-import { FriendContext } from "./Home";
+import { FriendContext, SocketContext } from "./Home";
 import { Friend } from "../../types/User";
 
 type props = {
@@ -32,10 +31,17 @@ export const AddUserModal = ({ isOpen, onOpen }: props) => {
     return () => document.removeEventListener("mousedown", closePopup);
   }, []);
   const context = useContext(FriendContext);
+  const context2 = useContext(SocketContext);
+
   if (!context) {
     return <div>Context is not available</div>;
   }
   const { setFriendList } = context;
+
+  if (!context2) {
+    return <div>Context is not available</div>;
+  }
+  const { socket } = context2;
   if (isOpen) {
     return (
       <Formik

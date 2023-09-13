@@ -37,6 +37,7 @@ export const Signup = () => {
       .then((res) => {
         navigate("/home", { state: res.data });
         setUser({ ...res.data });
+        localStorage.setItem("token", res.data.token);
       })
       .catch((err) => {
         console.log(err);

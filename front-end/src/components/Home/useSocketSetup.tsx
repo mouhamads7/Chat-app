@@ -1,15 +1,21 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Dispatch, SetStateAction, useContext, useEffect } from "react";
-import { socket } from "../../socket";
 import { AccountContext } from "../AccountContext";
 import { Friend, Message } from "../../types/User";
 
 type props = {
   setFriendList: Dispatch<SetStateAction<Friend[]>>;
   setMessages: Dispatch<SetStateAction<Message[]>>;
+  socket: any;
 };
 
-export const useSocketSetup = ({ setFriendList, setMessages }: props) => {
+export const useSocketSetup = ({
+  setFriendList,
+  setMessages,
+  socket,
+}: props) => {
   const context = useContext(AccountContext);
+
   if (!context) {
     return <div>Context is not available</div>;
   }
@@ -18,13 +24,13 @@ export const useSocketSetup = ({ setFriendList, setMessages }: props) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     socket.connect();
-    socket.on("receive_message", (message) => {
+    socket.on("receive_message", (message: Message) => {
       setMessages((prevM) => [message, ...prevM]);
     });
-    socket.on("friends", (friendList) => {
+    socket.on("friends", (friendList: SetStateAction<Friend[]>) => {
       setFriendList(friendList);
     });
-    socket.on("messages", (messages) => {
+    socket.on("messages", (messages: SetStateAction<Message[]>) => {
       setMessages(messages);
     });
     socket.on("connected", (connected: string, username: string) => {
@@ -38,7 +44,7 @@ export const useSocketSetup = ({ setFriendList, setMessages }: props) => {
       });
     });
     socket.on("connect_error", () => {
-      setUser({ loggedIn: 0 });
+      setUser({ loggedIn: 0, token: "" });
     });
     return () => {
       socket.off("connect_error");
@@ -47,5 +53,5 @@ export const useSocketSetup = ({ setFriendList, setMessages }: props) => {
       socket.off("messages");
       socket.off("receive_message");
     };
-  }, [setFriendList, setMessages, setUser]);
+  }, [setFriendList, setMessages, setUser, socket]);
 };

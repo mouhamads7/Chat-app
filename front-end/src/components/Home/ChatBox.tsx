@@ -1,8 +1,8 @@
 import { Form, Formik, Field } from "formik";
 import * as Yup from "yup";
-import { socket } from "../../socket";
 import { Message } from "../../types/User";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useContext } from "react";
+import { SocketContext } from "./Home";
 
 export const ChatBox = ({
   userid,
@@ -11,6 +11,11 @@ export const ChatBox = ({
   userid: string;
   setMessages: Dispatch<SetStateAction<Message[]>>;
 }) => {
+  const context = useContext(SocketContext);
+  if (!context) {
+    return <div>Context is not available</div>;
+  }
+  const { socket } = context;
   return (
     <Formik
       initialValues={{ to: "", from: "", content: "" }}

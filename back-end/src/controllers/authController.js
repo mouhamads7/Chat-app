@@ -1,6 +1,8 @@
 const User = require("../models/users");
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 exports.login = async (req, res) => {
   const user = await User.findOne({
@@ -13,12 +15,25 @@ exports.login = async (req, res) => {
   } else {
     const isSamePass = await bcrypt.compare(req.body.password, user.password);
     if (isSamePass) {
-      req.session.user = {
-        username: user.username,
-        id: user.id,
-        userid: user.userid,
-      };
-      res.status(200).json({ loggedIn: 1, username: user.username });
+      jwt.sign(
+        {
+          username: user.username,
+          id: user.id,
+          userid: user.userid,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "60min" },
+        (err, token) => {
+          if (err) {
+            console.log(err);
+            res.status(401).json({
+              loggedIn: 0,
+              message: "Something went wrong try again later",
+            });
+          }
+          res.status(200).json({ loggedIn: 1, username: user.username, token });
+        }
+      );
     } else {
       res
         .status(401)
@@ -27,11 +42,19 @@ exports.login = async (req, res) => {
   }
 };
 exports.getLogin = async (req, res) => {
-  if (req.session.user && req.session.user.username) {
-    res.status(200).json({ loggedIn: 1, username: req.session.username });
-  } else {
+  const token = req.headers["authorization"]?.split(" ")[1];
+  if (!token) {
     res.status(401).json({ loggedIn: 0 });
+    return;
   }
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      console.log(err);
+      res.status(401).json({ loggedIn: 0 });
+    } else {
+      res.status(200).json({ loggedIn: 1, token });
+    }
+  });
 };
 
 exports.signup = async (req, res) => {
@@ -48,12 +71,24 @@ exports.signup = async (req, res) => {
 
   try {
     const user = await User.create(USER_MODEL);
-    req.session.user = {
-      username: user.username,
-      id: user.id,
-      userid: user.userid,
-    };
-    res.status(201).json({ loggedIn: true, username: user.username });
+    jwt.sign(
+      {
+        username: user.username,
+        id: user.id,
+        userid: user.userid,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1min" },
+      (err, token) => {
+        if (err) {
+          res.status(401).json({
+            loggedIn: 0,
+            message: "Something went wrong try again later",
+          });
+        }
+        res.status(200).json({ loggedIn: 1, username: user.username, token });
+      }
+    );
   } catch (error) {
     res.status(500).json(error);
   }

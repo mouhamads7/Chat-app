@@ -1,4 +1,4 @@
-import { ChatBubbleBottomCenterTextIcon } from "@heroicons/react/20/solid";
+import { PlusCircleIcon } from "@heroicons/react/20/solid";
 import classNames from "classnames";
 import { useContext, useState } from "react";
 import { FriendContext } from "./Home";
@@ -20,7 +20,7 @@ export const Sidebar = ({ selectedUser, setSelectedUser }: props) => {
     <div className="py-4 text-white">
       <div className="flex justify-around border-b pb-3">
         <h1 className="font-bold">Add Friend</h1>
-        <ChatBubbleBottomCenterTextIcon
+        <PlusCircleIcon
           className="w-7 h-7 bg-gray-600 p-1 rounded-md cursor-pointer"
           onClick={() => setIsOpen(true)}
         />

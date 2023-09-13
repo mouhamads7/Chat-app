@@ -9,19 +9,25 @@ import {
 } from "react";
 import { getBaseUrl } from "./getBaseUrl";
 
-type UserContextType = {
-  user: { loggedIn: number };
-  setUser: Dispatch<SetStateAction<{ loggedIn: number }>>;
+export type UserContextType = {
+  user: { loggedIn: number; token: string | null };
+  setUser: Dispatch<SetStateAction<{ loggedIn: number; token: string | null }>>;
 };
 export const AccountContext = createContext<UserContextType | null>(null);
 
 export const UserContext = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState({ loggedIn: -1 });
+  const [user, setUser] = useState({
+    loggedIn: -1,
+    token: localStorage.getItem("token"),
+  });
   const baseUrl = getBaseUrl();
   useEffect(() => {
     axios
       .get(`${baseUrl}/auth/login`, {
         withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
       })
       .then((res) => {
         if (res.data.loggedIn === false) {

@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken");
 
 module.exports.authorizeUser = (socket, next) => {
   const token = socket.handshake.auth.token;
-  console.log("token", token);
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
       console.log("Bad request", err);
@@ -69,7 +68,10 @@ module.exports.addUser = async (socket, username, callback) => {
     0,
     -1
   );
-  if (currentFriendList && currentFriendList.indexOf(username) !== -1) {
+  if (
+    currentFriendList &&
+    currentFriendList.indexOf(`${username}.${friend.userid}`) !== -1
+  ) {
     callback({ done: false, error: "Friend already added" });
     return;
   }

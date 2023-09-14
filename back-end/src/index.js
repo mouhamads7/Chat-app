@@ -11,7 +11,7 @@ const {
   onDisconnect,
   sendMessage,
 } = require("./controllers/socketController");
-const { wrap, corsConfig } = require("./controllers/serverController");
+const { corsConfig } = require("./controllers/serverController");
 
 const io = new Server(server, {
   cors: corsConfig,

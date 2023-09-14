@@ -30,9 +30,6 @@ export const UserContext = ({ children }: { children: ReactNode }) => {
         },
       })
       .then((res) => {
-        if (res.data.loggedIn === false) {
-          setUser({ ...res.data });
-        }
         setUser({ ...res.data });
       })
       .catch((err) => {

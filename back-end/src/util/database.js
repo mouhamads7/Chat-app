@@ -7,9 +7,9 @@ const seq = new Sequelize(
   {
     host: process.env.POSTGRES_HOST,
     dialect: "postgres",
-    // define: {
-    //   timestamps: false,
-    // },
+    define: {
+      timestamps: false,
+    },
   }
 );
 

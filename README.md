@@ -10,3 +10,7 @@ To test the app:
 
 Note: i have already added this two users as friends. You can create more users and add friends by using the 
 plus icon on the left top corner of the app. And then enter the new user created.  
+
+Tech stack: 
+  - Front-end: React, typescript
+  - Backend: node js, express, postgresql, redis, socketio

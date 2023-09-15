@@ -12,7 +12,7 @@ import {
   useState,
 } from "react";
 import { useSocketSetup } from "./useSocketSetup";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { socket as sconn } from "../../socket";
 import { AccountContext } from "../AccountContext";
 import { ArrowLeftOnRectangleIcon } from "@heroicons/react/20/solid";
@@ -26,7 +26,6 @@ export const FriendContext = createContext<FriendContextType | null>(null);
 export const SocketContext = createContext<any>(null);
 
 export const Home = () => {
-  const navigate = useNavigate();
   const location = useLocation();
   const [friendList, setFriendList] = useState<Friend[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -62,7 +61,7 @@ export const Home = () => {
               <div
                 onClick={() => {
                   localStorage.removeItem("token");
-                  navigate("/login");
+                  window.location.reload();
                 }}
                 className="flex justify-center bg-gray-600 mb-10 bottom-10 left-[1rem] md:left-[30%] lg:left[33%] py-2 rounded-lg cursor-pointer hover:bg-gray-800 active:bg-slate-900"
               >

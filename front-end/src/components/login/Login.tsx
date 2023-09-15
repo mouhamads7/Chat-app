@@ -40,7 +40,7 @@ export const Login = () => {
   return (
     <Formik
       validationSchema={userSchema}
-      initialValues={{ username: "Momo", password: "Windows11$" }}
+      initialValues={{ username: "", password: "" }}
       onSubmit={(values) => {
         login(values);
       }}
